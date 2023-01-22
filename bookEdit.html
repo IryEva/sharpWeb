@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=ftfr, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <title>For Bookings</title>
+</head>
+<body>
+    <h3>Booking Appointment</h3>
+    <form>
+        <label>Name:</label>
+        <input type="text" id="name">
+        <label>Email:</label>
+        <input type="text" id="email">
+        <label>Phone:</label>
+        <input type="number" id="phone">
+        <input type="submit" class="btn btn-dark" id = 'submit'>
+    </form>
+    <ul id="items" class="list-group" >
+    </ul>
+</body>
+<script>
+    function saveToLocalStorage(event){
+    event.preventDefault();
+    const name = event.target.name.value;
+    const email= event.target.email.value;
+    const phone = event.target.phone.value;
+    localStorage.setItem('name',name);
+    localStorage.setItem('email',email);
+    localStorage.setItem('phone',phone);
+
+}
+
+
+var form = document.getElementById('submit').addEventListener('click',addItem);
+function addItem(e){
+    e.preventDefault();
+
+    // Get input value
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var phone = document.getElementById('phone').value;
+    var parent = document.getElementsByClassName('list-group');
+
+    localStorage.setItem('name',name);
+    localStorage.setItem('email',email);
+    localStorage.setItem('phone',phone);
+
+
+    // Create new li element
+    let li = document.createElement('li');
+    li.textContent = `${name}-${email}-${phone}`
+
+    var deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete';
+    deleteBtn.appendChild(document.createTextNode('Delete'));
+    var editBtn = document.createElement('button');
+    editBtn.className = 'edit';
+    editBtn.appendChild(document.createTextNode('Edit'));
+    li.appendChild(deleteBtn);
+    li.appendChild(editBtn);
+    
+    parent[0].appendChild(li);
+}
+var itemList = document.getElementById('items');
+itemList.addEventListener('click', removeItem);
+
+function removeItem(e) {
+    if(e.target.classList.contains('delete')){
+        var ul = e.target.parentElement;
+        itemList.removeChild(ul);
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
+        localStorage.removeItem('phone');
+       
+    }
+}
+
+var editList = document.getElementById('items');
+editList.addEventListener('click', editItem);
+
+function editItem(ev) {
+    if(ev.target.classList.contains('edit')){
+        var vl = ev.target.parentElement;
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
+        localStorage.removeItem('phone');
+        itemList.removeChild(vl);
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var phone = document.getElementById('phone').value;
+        document.getElementById('name').value = name;
+        document.getElementById('email').value = email;
+        document.getElementById('phone').value = phone;
+    }
+
+}
+
+</script>
+</html>
