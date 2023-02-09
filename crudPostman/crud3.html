@@ -1,0 +1,104 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=ftfr, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <title>For Bookings</title>
+</head>
+<body>
+    <h3>Booking Appointment</h3>
+    <form>
+        <label>Name:</label>
+        <input type="text" id="name">
+        <label>Email:</label>
+        <input type="text" id="email">
+        <label>Phone:</label>
+        <input type="number" id="phone">
+        <input type="submit" class="btn btn-dark" id = 'submit'>
+    </form>
+    <ul id="items" class="list-group" >
+    </ul>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js"></script>
+<script>
+
+
+window.addEventListener("DOMContentLoaded",()=>{
+    axios.get('https://crudcrud.com/api/9ef26c1d4bf547e7a95c931f22573d6b/appointmentData')
+    .then((res)=>{
+        for(let i=0;i<res.data.length;i++){
+            dataName = res.data[i].name;
+            dataEmail = res.data[i].email;
+            dataPhone = res.data[i].phone;
+            id = res.data[i]._id;
+         
+            var li = `<li id="${id}">${dataName} - ${dataEmail} - ${dataPhone}<button  onClick="removeItem('${id}')">delete</button>
+            <button onClick="editItem('${id}')">edit</button></li>`;
+            let target = document.querySelector('.list-group');
+            target.innerHTML = target.innerHTML + li;
+        }
+    })
+})
+
+    
+document.getElementById('submit').addEventListener('click',addItem);
+
+function addItem(event){
+    event.preventDefault();
+    const name = document.getElementById('name').value;
+    const email= document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+
+    const obj = {
+        name: name,
+        email: email,
+        phone: phone
+    }
+
+    axios.post("https://crudcrud.com/api/9ef26c1d4bf547e7a95c931f22573d6b/appointmentData",obj)
+    .then((response) => {
+       addOnScreen(response.data)
+    })  
+    .catch((err) => {
+        console.log(err)
+    })
+
+    document.getElementById('name').value = "";
+    document.getElementById('email').value = "";
+    document.getElementById('phone').value = "";
+
+}
+
+function addOnScreen(data){
+    var li = `<li id="${data._id}">${data.name} <button  onClick="removeItem('${data._id}')">delete</button>
+            <button onClick="editItem('${data._id}')">edit</button></li>`;
+            let target = document.querySelector('.list-group');
+            target.innerHTML = target.innerHTML + li;
+}
+
+
+function removeItem(id) {
+    axios.delete(`https://crudcrud.com/api/9ef26c1d4bf547e7a95c931f22573d6b/appointmentData/${id}`)
+
+    let ul = document.getElementById('items');
+    let li = document.getElementById(id);
+    ul.removeChild(li);
+}
+
+
+function editItem(id) {
+    let li = document.getElementById('id');
+    removeItem(id);
+
+    axios.get(`https://crudcrud.com/api/9ef26c1d4bf547e7a95c931f22573d6b/appointmentData/${id}`)
+    .then((res)=>{
+        document.getElementById('name').value = res.data.name;
+        document.getElementById('email').value = res.data.email;
+        document.getElementById('phone').value = res.data.phone;
+    })
+
+
+}
+
+</script>
+</html>
