@@ -5,8 +5,9 @@ const server = http.createServer((req,res) => {
     const url = req.url;
     const method = req.method;
     const path = require('path');
+   // const _dirname = require('_dirname')
     if(url === '/') {
-        const filePath = path.join(_dirname,"message.txt");
+        const filePath = path.join(__dirname,"message.txt");
 
         fs.readFile(filePath,{ encoding: "utf-8"},(err,data) => {
 
@@ -23,7 +24,7 @@ const server = http.createServer((req,res) => {
         
 
     }
-    if(url === '/message' && method === 'POST'){
+    else if(url === '/message' && method === 'POST'){
         const body = [];
         req.on('data',(chunk) => {
             console.log(chunk);
@@ -42,13 +43,14 @@ const server = http.createServer((req,res) => {
         
 
     }
-    console.log(req.url,req.method,req.headers);
-    res.setHeader('Content-Type','text/html');
-    res.write('<html>');
-    res.write('<header><title>My First Page</title><head>');
-    res.write('<body><h1>Hello from my Node.js server!</h1></body>');
-    res.write('</html>');
-    res.end();
+    else{
+        res.setHeader('Content-Type','text/html');
+        res.write('<html>');
+        res.write('<header><title>My First Page</title><head>');
+        res.write('<body><h1>Hello from my Node.js server!</h1></body>');
+        res.write('</html>');
+        res.end();
+    }
 })
 
 server.listen(4000);
