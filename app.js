@@ -1,31 +1,19 @@
-var a = 2;
+const express = require('express');
+const bodyParser = require('body-parser');
 
-var c = 2;
+const app = express();
 
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
+app.use(bodyParser.urlencoded({ extended: false}));
 
-function b(){
+app.use('/admin',adminRoutes);
+app.use(shopRoutes);
 
-var x = 2;
+app.use((req,res,next) => {
+    res.status(404).send('<h1>Page not found</h1>');
 
-var c = 4
+});
 
-console.log(c)
-
-}
-
-
-
-console.log(a);
-
-console.log(this.a);
-
-console.log(this.c)
-
-console.log(this.x)
-
-console.log(window.a)
-
-console.log(window.x)
-
-console.log(b());
+app.listen(5000);
